@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1>Register Student</h1>
+    <form id="registrationForm" method="post" action="{% url 'ajax_register' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <div id="message"></div>
+
+    <script>
+        $(document).ready(function(){
+            $('#registrationForm').on('submit', function(event){
+                event.preventDefault();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: $(this).attr('method'),
+                    data: $(this).serialize(),
+                    success: function(data){
+                        if(data.success){
+                            $('#message').html('<p>Student registered successfully!</p>');
+                        } else {
+                            $('#message').html('<p>Error: ' + JSON.stringify(data.errors) + '</p>');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
